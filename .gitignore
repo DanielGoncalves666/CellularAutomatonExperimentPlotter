@@ -2,3 +2,7 @@ in/*
 !in/.gitkeep
 out/*
 !out/.gitkeep
+
+.env
+.idea/
+__pycache__/
