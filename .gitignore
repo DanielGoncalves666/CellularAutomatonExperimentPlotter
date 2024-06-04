@@ -1,8 +1,11 @@
 in/*
 !in/.gitkeep
+!in/varas*
+
 out/*
 !out/.gitkeep
 
 .env
+.venv
 .idea/
 __pycache__/
