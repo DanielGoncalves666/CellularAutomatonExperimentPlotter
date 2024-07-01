@@ -1,14 +1,16 @@
 import time
 import argparse
 import sys
+import matplotlib.pyplot as plt
 
-import processing
 import plotting
+import processing
+
 
 def creating_arg_parser():
 
     description = 'A simple graphic generator for cellular automaton experiments.'
-    epilog = """The options --ignore-marked-data and --force-over-values only works for heatmao and contours graphics.\n
+    epilog = """The options --ignore-marked-data and --force-over-values only works for heatmap and contours graphics.\n
     Optins not needed to some graphics are ignored."""
 
     # ArgumentParser will contain all information about the command line interface
@@ -25,6 +27,7 @@ def creating_arg_parser():
     parser.add_argument('-y', '--ylabel', nargs=1, help="Y-axis label")
     parser.add_argument('--ignore-marked-data', action='store_true', help="Ignore marked data in lines beggining with #1 during the calculation of the min/max values.")
     parser.add_argument('--force-over-values', action='store_true', help="Force values exceeding the maximum determined value to be colored dark red. Without this, some graphics may display a mix of colors where only dark red should appear.")
+    parser.add_argument('--only-save-fig', action='store_true', help="Doesn't show the generated graphic.")
 
     return parser
 
@@ -40,18 +43,18 @@ def generate_graphic():
         plotting.plot_contours_graphic(data_matrix, min_max_values, output_file, labels, "float")
     elif choice == "line_graphic":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
-        plotting.plot_line_graphic(x_axis_ticks,y_axis_ticks,legends,data_vector,output_file,labels, False)
+        plotting.plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels, False)
     elif choice == "scatter_graphic":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
-        plotting.plot_scatter_graphic(x_axis_ticks,y_axis_ticks,legends,data_vector,output_file,labels)
+        plotting.plot_scatter_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels)
     elif choice == "varas_door_width_7":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
-        processed_lengends, difference_data_vector = processing.varas_door_width_fig_7(legends,data_vector)
-        plotting.plot_line_graphic(x_axis_ticks,y_axis_ticks,processed_lengends,difference_data_vector,output_file, labels, False)
+        processed_lengends, difference_data_vector = processing.varas_door_width_fig_7(legends, data_vector)
+        plotting.plot_line_graphic(x_axis_ticks, y_axis_ticks, processed_lengends, difference_data_vector, output_file, labels, False)
     elif choice == "varas_door_width_9":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
-        quotient_data_vector = processing.varas_door_width_fig_9(legends,data_vector)
-        plotting.plot_line_graphic(x_axis_ticks,y_axis_ticks,legends,quotient_data_vector,output_file,labels, True)
+        quotient_data_vector = processing.varas_door_width_fig_9(legends, data_vector)
+        plotting.plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, quotient_data_vector, output_file, labels, True)
     else:
         sys.stderr.write("Invalid graphic.\n")
         exit()
@@ -71,3 +74,6 @@ if __name__ == "__main__":
     force_over_values = command_line.force_over_values
     
     generate_graphic()
+
+    if not command_line.only_save_fig:
+        plt.show()  # show the graphic

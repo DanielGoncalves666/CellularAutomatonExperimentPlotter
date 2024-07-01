@@ -1,0 +1,12 @@
+1 3 5 7 9 11 13
+2 4 6 8 10 12 14
+
+
+../varas_fig_6/varas_fig_6_50ped.txt N=50
+../varas_fig_7/varas_fig_7_50ped.txt N=50
+../varas_fig_6/varas_fig_6_100ped.txt N=100
+../varas_fig_7/varas_fig_7_100ped.txt N=100
+../varas_fig_6/varas_fig_6_150ped.txt N=150
+../varas_fig_7/varas_fig_7_150ped.txt N=150
+../varas_fig_6/varas_fig_6_200ped.txt N=200
+../varas_fig_7/varas_fig_7_200ped.txt N=200

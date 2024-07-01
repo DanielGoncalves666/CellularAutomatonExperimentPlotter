@@ -14,11 +14,13 @@ To execute the program, use the command `python3 run.py` followed by the require
 python3 run.py --help
 ```
 
+The scripts `varas_experiments_plotter.sh` and `alizadeh_experiments_plotter.sh` provide examples of how to run the program to generate various graphics. 
+
 ## Available Options
 
 ### Input
 
-The `-i` option specifies the name of file containing the data to be used for plotting the graphic. This file can either be an actual data file or a configuration file. Refer to the [Selecting the Graphic to be generated](#selecting-the-graphic-to-be-generated) section to determine the required file type for each graphic.
+The `-i` option specifies the name of the file containing the data to be used for plotting the graphic. This file can either be an actual data file or a configuration file. Refer to the [Selecting the Graphic to be generated](#selecting-the-graphic-to-be-generated) section to determine the required file type for each graphic.
 
 #### Data file
 
@@ -67,14 +69,6 @@ Generates a point graphic. Multiple data sets can be plotted into the same graph
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 7 from Varas (2007).
 7. varas_door_width_9
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 9 from Varas (2007).
-
-Graphics 1 through 3 must receive a data file as input. The remaining graphics must receive a configuration file. Examples of these files can be found in the `in/` directory:
-
-* **line_graphic**: varas_fig_6, varas_fig_12, varas_fig_13, varas_fig_17a
-* **varas_door_width_7**: varas_fig_7
-* **varas_door_width_9**: varas_fig_9
-* **scatter_graphic**: varas_fig_14, varas_fig_17b
-* **heatmap**: varas_fig_15
 
 ### Dealing with specific data
 

@@ -103,8 +103,6 @@ def plot_heatmap(data_matrix, min_max_values, output_file, labels):
 
     set_labels(labels)
 
-    plt.show()
-
     fig.savefig(f"out/{output_file}")
 
 def plot_contours_graphic(data_matrix, min_max_values, output_file, labels, data_type):
@@ -136,8 +134,6 @@ def plot_contours_graphic(data_matrix, min_max_values, output_file, labels, data
     plt.colorbar()  # add the colorbar
 
     set_labels(labels)
-
-    plt.show()  # show the graphic
 
     fig.savefig(f"out/{output_file}")
 
@@ -194,8 +190,8 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
 
     for data_line in data_vector:
         if not x_tick_locations and x_tick_values:
-            if len(x_tick_locations) != len(data_line):
-                sys.stderr.write(f"The number of elements in the x-axis ({len(x_axis)}) is different from the number os elements in the y-axis ({len(y_axis)}).\n")
+            if len(x_tick_values) != len(data_line):
+                sys.stderr.write(f"The number of elements in the x-axis ({len(x_tick_values)}) is different from the number os elements in the y-axis ({len(data_line)}).\n")
                 exit()
 
             plt.plot(x_tick_values, data_line, 'o-')
@@ -211,8 +207,6 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
 
     if len(legends) > 1:
         plt.legend(legends)
-
-    plt.show()  # show the graphic
 
     fig.savefig(f"out/{output_file}")
 
@@ -274,7 +268,5 @@ def plot_scatter_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, outpu
 
     if len(legends) > 1:
         plt.legend(legends)
-
-    plt.show()  # show the graphic
 
     fig.savefig(f"out/{output_file}")

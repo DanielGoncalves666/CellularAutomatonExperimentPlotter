@@ -1,6 +1,0 @@
-0 4 9 14 19 24 29 34 39 43
-1 5 10 15 20 25 30 35 40 44
-
-
-varas_fig_12_with_obstacles.txt With_Obstacles
-varas_fig_12_without_obstacles.txt Without_Obstacles

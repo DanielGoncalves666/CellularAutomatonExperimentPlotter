@@ -1,0 +1,4 @@
+./alizadeh.sh -ealizadeh_classroom.txt -oalizadeh/alizadeh_figura_15/alizadeh_fig_15_alpha2.0.txt -m4 -O2 --alpha=2.0 -s10 --allow-x-movement
+--------------------------------------------------------------
+
+51 51 51 49 51 49 50 47 50 53 
