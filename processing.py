@@ -34,15 +34,66 @@ def extract_tick_information(line):
 
     return line.split(" ")
 
-def process_heatmap_data(filename, ignore_marked_data, data_type, force_over_values):
+def process_env_heatmap_data(filename, wall_threshold):
     """
-        Process data that can be plotted into a heatmap or into a contours graphic. The data is read from a single file, processed and then returned as a square matrix.
+        Process data that will be plotted into a heatmap.
+        Each value in the file from which the data is read corresponds to a single cell in a cellular automaton.
 
         Args:
             filename (str): The name of the file containing the data.
-            ignore_marked_data (bool): Indicates if data on lines beginning with '#1' must be ignored when calculating min/max.
-            data_type (str): Indicates whether the data contained on FILENAME is of type 'int' or 'float'.
-            force_over_values (bool): Indicates if over values (on lines beggining with #1) must be forced to be higher (in order for them to be colored darkred).
+            wall_threshold (float): The threshold from which a value is considered to be an over value.
+
+        Returns:
+            A tuple containing:
+                - A 2 dimension numpy array.
+                - A float, indicating the maximum value of the data (ignoring over values).
+    """
+
+    data_matrix = []
+    maximum_value = -1
+
+    try:
+        with open(filename, "r") as file:
+
+            first_line = file.readline().strip("\n ").split()
+            data_matrix.append(list(map(float, first_line)))
+
+            len_of_lines = len(first_line)
+            for line_number, line in enumerate(file, start=1):
+                if line == "\n":
+                    continue
+
+                line = line.strip("\n ").split()
+
+                if len(line) != len_of_lines:
+                    sys.stderr.write(f"Line {line_number} contains a different number of elements ({len(line)}) compared to the first line ({len_of_lines}).\n")
+                    exit()
+
+                line_data = list(map(float, line))
+                for v in line_data:
+                    if maximum_value < v < wall_threshold:
+                        maximum_value = v
+
+                data_matrix.append(line_data)
+    except FileNotFoundError:
+        sys.stderr.write(f"File {filename} not found.\n")
+        exit()
+    except ValueError:
+        sys.stderr.write(f"Non-numeric value found in the data.\n")
+        exit()
+
+    return np.array(data_matrix), maximum_value
+
+def process_heatmap_data(filename, ignore_marked_data, data_type, force_over_values):
+    """
+        Process data that can be plotted into a heatmap or into a contour graphic.
+        The data is read from a single file, processed and then returned as a square matrix.
+
+        Args:
+            filename (str): the name of the file containing the data.
+            ignore_marked_data (bool): indicates if data on lines beginning with '#1' must be ignored when calculating min/max.
+            data_type (str): indicates whether the data contained on the FILENAME is of type 'int' or 'float'.
+            force_over_values (bool): indicates if over values (on lines beginning with #1) must be forced to be higher (in order for them to be colored darkred).
 
         Returns:
             tuple (np.ndarray, tuple(float, float)):
@@ -64,7 +115,7 @@ def process_heatmap_data(filename, ignore_marked_data, data_type, force_over_val
     try:
         with open(filename) as file:
             for _ in range(3):
-                file.readline()  # ignore the lines that doesn't contain simulation data on the beggining of the file
+                file.readline()  # ignore the lines that don't contain simulation data on the beggining of the file.
 
             while True:
                 line = file.readline()
@@ -97,7 +148,7 @@ def process_heatmap_data(filename, ignore_marked_data, data_type, force_over_val
                         max_value = max_corrent
 
                 if marked_data and force_over_values:
-                    data_value = [x * 2 for x in data_value] # by making the values higher the generated contours will be correct.
+                    data_value = [x * 2 for x in data_value] # by making the values higher, the generated contours will be correct.
 
                 data_vector.append(np.mean(data_value))
     except FileNotFoundError:
@@ -135,7 +186,7 @@ def process_configuration_file(filename):
                 - The second line must contain the values of the x-axis ticks.
                 - The third line must contain the locations of the y-axis ticks.
                 - The fourth line must contain the values of the y-axis ticks.
-                - The remaining lines must contain pairs of a filename with a set of data and the respective legend to be included in the graphic.
+                - The remaining lines must contain pairs of filenames, with a set of data, and the respective legend to be included in the graphic.
 
             It's assumed that the configuration file and all the files with their names inside it are located in the same directory.
     """
@@ -190,7 +241,7 @@ def process_experimental_data_file(filename):
     try:
         with open(filename) as file:
             for _ in range(3):
-                file.readline()  # ignore the lines that doesn't contain simulation data on the beggining of the file
+                file.readline()  # ignore the lines that don't contain simulation data on the beggining of the file.
 
             while True:
                 line = file.readline()
@@ -216,7 +267,7 @@ def varas_door_width_fig_7(legends, data_vector):
         This difference is used to plot the Fig. 7 experiment from (VARAS, 2007).
 
         Both legends and data_vector contain values related to Tu and Te, in alternating order.
-        The first value is a Tu, the second a Te, the third a Tu and so on.
+        The first value is a Tu, the second Te, the third Tu and so on.
 
         Args:
             legends (list): the legends of each data set.
@@ -232,7 +283,7 @@ def varas_door_width_fig_7(legends, data_vector):
         exit()
 
     normal_configuration = [u for u in data_vector[::2]]
-    empty_configuration = [e for e in data_vector[1::2]] # data sets where the two first columns at the lef of the room were empty
+    empty_configuration = [e for e in data_vector[1::2]] # data sets where the two first columns at the lef of the room were empty.
 
     difference_data_vector = []
     for tu, te in zip(normal_configuration, empty_configuration):

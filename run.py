@@ -6,20 +6,19 @@ import matplotlib.pyplot as plt
 import plotting
 import processing
 
-
 def creating_arg_parser():
 
     description = 'A simple graphic generator for cellular automaton experiments.'
-    epilog = """The options --ignore-marked-data and --force-over-values only works for heatmap and contours graphics.\n
+    epilog = """The options --ignore-marked-data and --force-over-values only works for heatmap and contours graphics. The --wall-threshold option only works for environment_heatmap graphics.\n
     Optins not needed to some graphics are ignored."""
 
     # ArgumentParser will contain all information about the command line interface
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
 
-    # add_argument adds new arguments or options that can be inserted by command line
+    # add_argument adds new arguments or options that can be inserted by command line.
     parser.add_argument('-i', required=True, nargs=1, help="Filename that contains the data from which the graphic will be generated.")
-    possible_graphics = ["heatmap", "int_contours", "float_contours", "line_graphic", "scatter_graphic",
-                         "varas_door_width_7", "varas_door_width_9"]
+    possible_graphics = ["environment_heatmap", "heatmap", "int_contours", "float_contours", "line_graphic",
+                         "scatter_graphic", "varas_door_width_7", "varas_door_width_9"]
     parser.add_argument('-g','--graphic', choices=possible_graphics, required=True, nargs=1, help="Specifies which graphic should be generated.")
     parser.add_argument('-o','--out', nargs="?", default="", help="Filename on which the graphic should be saved.")
     parser.add_argument('-t','--title', nargs=1, help="The title of the generated graphic.")
@@ -28,11 +27,15 @@ def creating_arg_parser():
     parser.add_argument('--ignore-marked-data', action='store_true', help="Ignore marked data in lines beggining with #1 during the calculation of the min/max values.")
     parser.add_argument('--force-over-values', action='store_true', help="Force values exceeding the maximum determined value to be colored dark red. Without this, some graphics may display a mix of colors where only dark red should appear.")
     parser.add_argument('--only-save-fig', action='store_true', help="Doesn't show the generated graphic.")
+    parser.add_argument('--wall-threshold', nargs=1, default=1000.0, help="Threshold value above which a cell is considered a wall or obstacle. The threshold value itself is also treated as a wall.")
 
     return parser
 
 def generate_graphic():
-    if choice == "heatmap":
+    if choice == "environment_heatmap":
+        data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold)
+        plotting.plot_heatmap(data_matrix, (0,maximum_value), output_file, labels, over_value_color="white")
+    elif choice == "heatmap":
         (data_matrix, min_max_values) = processing.process_heatmap_data(input_file, ignore_marked_data, "int", force_over_values)
         plotting.plot_heatmap(data_matrix, min_max_values, output_file, labels)
     elif choice == "int_contours":
@@ -72,6 +75,7 @@ if __name__ == "__main__":
     
     ignore_marked_data = command_line.ignore_marked_data
     force_over_values = command_line.force_over_values
+    wall_threshold = command_line.wall_threshold
     
     generate_graphic()
 

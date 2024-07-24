@@ -6,9 +6,13 @@ import sys
 
 COLORS = ["darkblue","blue","royalblue","cyan","limegreen","yellow","darkorange","red","darkred"]
 
-def set_colormap():
+def set_colormap(under_color="black", over_color="darkred"):
     """
         Create and configure the colors of a heatmap.
+
+        Args:
+            under_color (str): The name of the color to be set for undervalues. Defaults to black.
+            over_color (str): The name of the color to be set for over values. Defaults to darkred.
 
         Returns:
             mcolors.LinearSegmentedColormap:
@@ -16,8 +20,8 @@ def set_colormap():
     """
 
     hmap = mcolors.LinearSegmentedColormap.from_list("heatmap", COLORS)
-    hmap.set_over("darkred") # values above MAX_VALUE receive red color
-    hmap.set_under("black") # values below MIN_VALUE receive black color
+    hmap.set_over(over_color) # values above MAX_VALUE
+    hmap.set_under(under_color) # values below MIN_VALUE
     
     return hmap
 
@@ -79,7 +83,7 @@ def get_scaling_law():
 
     return  exit_width, scaling_law
 
-def plot_heatmap(data_matrix, min_max_values, output_file, labels):
+def plot_heatmap(data_matrix, min_max_values, output_file, labels, over_value_color="darkred"):
     """
         Generate a heatmap based on the parameters' data.
 
@@ -91,6 +95,7 @@ def plot_heatmap(data_matrix, min_max_values, output_file, labels):
                        - labels[0]: The title of the graph.
                        - labels[1]: The label for the x-axis.
                        - labels[2]: The label for the y-axis.
+            over_value_color (str): The color to be used for coloring over values. Defaults to darkred.
         Returns:
             None
     """
@@ -98,7 +103,7 @@ def plot_heatmap(data_matrix, min_max_values, output_file, labels):
     fig = plt.figure()
 
     (min_value, max_value) = min_max_values
-    plt.imshow(data_matrix, vmin=min_value, vmax=max_value, cmap=set_colormap(),origin="lower")
+    plt.imshow(data_matrix, vmin=min_value, vmax=max_value, cmap=set_colormap(over_color=over_value_color), origin="lower")
     plt.colorbar()
 
     set_labels(labels)
@@ -107,7 +112,7 @@ def plot_heatmap(data_matrix, min_max_values, output_file, labels):
 
 def plot_contours_graphic(data_matrix, min_max_values, output_file, labels, data_type):
     """
-        Generate contours graphic based on the parameters' data.
+        Generate a contour graphic based on the parameters' data.
 
         Args:
             data_matrix (np.ndarray): A 2D numpy array representing the data.
@@ -117,7 +122,7 @@ def plot_contours_graphic(data_matrix, min_max_values, output_file, labels, data
                        - labels[0]: The title of the graph.
                        - labels[1]: The label for the x-axis.
                        - labels[2]: The label for the y-axis.
-            data_type (str): indicates if the contours graphic is generated out of "int" or "float" data.
+            data_type (str): indicates if the contour graphic is generated out of "int" or "float" data.
 
         Returns:
             None
@@ -156,7 +161,7 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
                            - labels[0]: The title of the graphic.
                            - labels[1]: The label for the x-axis.
                            - labels[2]: The label for the y-axis.
-            scaling_law (bool): Indicates if the scaling law of (VARAS,2007) should be plotted.
+            scaling_law (bool): Indicates if the scaling law of (VARAS, 2007) should be plotted.
         Returns:
             None
 

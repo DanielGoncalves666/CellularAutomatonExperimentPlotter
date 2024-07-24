@@ -20,16 +20,17 @@ The scripts `varas_experiments_plotter.sh` and `alizadeh_experiments_plotter.sh`
 
 ### Input
 
-The `-i` option specifies the name of the file containing the data to be used for plotting the graphic. This file can either be an actual data file or a configuration file. Refer to the [Selecting the Graphic to be generated](#selecting-the-graphic-to-be-generated) section to determine the required file type for each graphic.
+The `-i` option specifies the name of the file containing the data to be used for plotting the graphic. 
+This file can either be an actual data file, or a configuration file. Refer to the [Selecting the Graphic to be generated](#selecting-the-graphic-to-be-generated) section to determine the required file type for each graphic.
 
 #### Data file
 
-This file is the direct output obtained from an experiment using any implementation of a Cellular Automaton for pedestrian evacuation. Its content follows this structure:
+This file is the direct output obtained from an experiment using any implementation of a Cellular Automaton for pedestrian evacuation (with exception to files for environment_heatmap graphics, which should have only data). Its content follows this structure:
 
 * The first line contains the command used to generate the data.
 * The second line is a separator formed by hyphens (`-`).
 * The third line is empty.
-* The remaining lines contain the simulation results, typically the number of timesteps. Each line refer to a combination of doors.  
+* The remaining lines contain the simulation results, typically the number of timesteps. Each line refers to a combination of doors.  
 
 #### Configuration File
 
@@ -55,19 +56,23 @@ You can specify the title and labels for the x and y axes using the `-t`, `-x`, 
 
 The graphic to be generated must be selected using the `-g` or `--graphic` option. The following graphics are available:
 
-1. heatmap
-Generates a heatmap.
-2. int_contours
+1. environment_heatmap
+Generates a heatmap of an environment. 
+Each value in the input file corresponds to a single cell in the environment. Futhermore, the data file must not have additional information at the beginning. 
+2. heatmap
+Generates a heatmap. 
+Each line of the input file corresponds to a single value in the heatmap. If necessary, a mean of the values in each line is calculated.
+3. int_contours
 Generates a contour graphic from integer data. 
-3. float_contours
+4. float_contours
 Generates a contour graphic from floating point data.
-4. line_graphic
+5. line_graphic
 Generates a line graphic with at least one line. 
-5. scatter_graphic
+6. scatter_graphic
 Generates a point graphic. Multiple data sets can be plotted into the same graphic.
-6. varas_door_width_7
+7. varas_door_width_7
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 7 from Varas (2007).
-7. varas_door_width_9
+8. varas_door_width_9
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 9 from Varas (2007).
 
 ### Dealing with specific data
@@ -79,6 +84,11 @@ The **heatmap** and **contours** graphics can receive data from simulations wher
 #### Forcing over values
 
 In some instances of **contours** graphics, certain values may not be colored correctly. In these cases, the `--force-over-values` option can be used to ensure they are properly colored.
+
+#### Wall and obstacle value
+
+In the **environment_heatmap** graphic, values equal and above a certain threshold are considered as a wall or obstacle and colored outside the colorbar range. 
+The default value for this feature is 1000, but can be altered using the `--wall-threshold` option.
 
 ## Program Architecture
 
