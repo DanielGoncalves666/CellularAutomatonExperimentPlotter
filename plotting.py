@@ -83,7 +83,7 @@ def get_scaling_law():
 
     return  exit_width, scaling_law
 
-def plot_heatmap(data_matrix, min_max_values, output_file, labels, over_value_color="darkred"):
+def plot_heatmap(data_matrix, min_max_values, output_file, labels, over_value_color="darkred", origin="lower"):
     """
         Generate a heatmap based on the parameters' data.
 
@@ -96,6 +96,7 @@ def plot_heatmap(data_matrix, min_max_values, output_file, labels, over_value_co
                        - labels[1]: The label for the x-axis.
                        - labels[2]: The label for the y-axis.
             over_value_color (str): The color to be used for coloring over values. Defaults to darkred.
+            origin (str): Indicates where the [0,0] coordinates should be placed (lower, upper). Defaults to "lower".
         Returns:
             None
     """
@@ -103,7 +104,7 @@ def plot_heatmap(data_matrix, min_max_values, output_file, labels, over_value_co
     fig = plt.figure()
 
     (min_value, max_value) = min_max_values
-    plt.imshow(data_matrix, vmin=min_value, vmax=max_value, cmap=set_colormap(over_color=over_value_color), origin="lower")
+    plt.imshow(data_matrix, vmin=min_value, vmax=max_value, cmap=set_colormap(over_color=over_value_color), origin=origin)
     plt.colorbar()
 
     set_labels(labels)
