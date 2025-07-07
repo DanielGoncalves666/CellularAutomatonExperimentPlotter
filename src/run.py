@@ -1,7 +1,7 @@
 import time
 import argparse
 import sys
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 import plotting
 import processing
@@ -34,7 +34,7 @@ def creating_arg_parser():
 def generate_graphic():
     if choice == "environment_heatmap":
         data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold)
-        plotting.plot_heatmap(data_matrix, (0,maximum_value), output_file, labels, over_value_color="white", origin="upper")
+        plotting.plot_heatmap(data_matrix, (0, maximum_value), output_file, labels, over_value_color="white", origin="upper")
     elif choice == "heatmap":
         (data_matrix, min_max_values) = processing.process_heatmap_data(input_file, ignore_marked_data, "int", force_over_values)
         plotting.plot_heatmap(data_matrix, min_max_values, output_file, labels)

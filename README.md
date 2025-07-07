@@ -6,12 +6,16 @@ A simple program designed to process and plot data generated from various Cellul
 
 To run the program, you need to install the `numpy` and `matplotlib` libraries, preferably in a Python virtual environment. You can create and activate the virtual environment and install the necessary packages by executing the `env_setup.sh` script.
 
+```shell
+./env_setup.sh
+```
+
 ## How to Run
 
-To execute the program, use the command `python3 run.py` followed by the required options. For a list of all available options, run:
+To execute the program, run the `run.sh` script followed by the required options. For a list of all available options, run:
 
 ```shell
-python3 run.py --help
+./run.sh --help
 ```
 
 The scripts `varas_experiments_plotter.sh` and `alizadeh_experiments_plotter.sh` provide examples of how to run the program to generate various graphics. 
