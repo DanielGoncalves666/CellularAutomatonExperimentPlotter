@@ -10,7 +10,7 @@ def creating_arg_parser():
 
     description = 'A simple graphic generator for cellular automaton experiments.'
     epilog = """The options --ignore-marked-data and --force-over-values only works for heatmap and contours graphics. The --wall-threshold option only works for environment_heatmap graphics.\n
-    Optins not needed to some graphics are ignored."""
+    Options not needed to some graphics are ignored."""
 
     # ArgumentParser will contain all information about the command line interface
     parser = argparse.ArgumentParser(description=description, epilog=epilog)
@@ -24,10 +24,10 @@ def creating_arg_parser():
     parser.add_argument('-t','--title', nargs=1, help="The title of the generated graphic.")
     parser.add_argument('-x', '--xlabel', nargs=1, help="X-axis label")
     parser.add_argument('-y', '--ylabel', nargs=1, help="Y-axis label")
-    parser.add_argument('--ignore-marked-data', action='store_true', help="Ignore marked data in lines beggining with #1 during the calculation of the min/max values.")
+    parser.add_argument('--ignore-marked-data', action='store_true', help="Ignore marked data in lines beginning with #1 during the calculation of the min/max values.")
     parser.add_argument('--force-over-values', action='store_true', help="Force values exceeding the maximum determined value to be colored dark red. Without this, some graphics may display a mix of colors where only dark red should appear.")
     parser.add_argument('--only-save-fig', action='store_true', help="Doesn't show the generated graphic.")
-    parser.add_argument('--wall-threshold', nargs=1, default=1000.0, help="Threshold value above which a cell is considered a wall or obstacle. The threshold value itself is also treated as a wall.")
+    parser.add_argument('--wall-threshold', nargs=1, default=1000.0, help="Threshold value above (or bellow, if negative) which a cell is considered a wall or obstacle. The threshold value itself is also treated as a wall.")
 
     return parser
 
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     
     ignore_marked_data = command_line.ignore_marked_data
     force_over_values = command_line.force_over_values
-    wall_threshold = command_line.wall_threshold
+    wall_threshold = float(command_line.wall_threshold[0])
     
     generate_graphic()
 

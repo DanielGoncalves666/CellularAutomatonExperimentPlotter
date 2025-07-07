@@ -34,14 +34,14 @@ def extract_tick_information(line):
 
     return line.split(" ")
 
-def process_env_heatmap_data(filename, wall_threshold):
+def process_env_heatmap_data(filename: str, wall_threshold: float):
     """
         Process data that will be plotted into a heatmap.
         Each value in the file from which the data is read corresponds to a single cell in a cellular automaton.
 
         Args:
             filename (str): The name of the file containing the data.
-            wall_threshold (float): The threshold from which a value is considered to be an over value.
+            wall_threshold (float): The threshold from which a value is considered to be an over value. For a negative threshold the values below it are considered.
 
         Returns:
             A tuple containing:
@@ -52,10 +52,16 @@ def process_env_heatmap_data(filename, wall_threshold):
     data_matrix = []
     maximum_value = -1
 
+    very_high_value = 2 ** 30 # For a negative threshold, all values equal or below it are converted to the very_high_value in order to not require further alterations in the code.
+    verification_threshold = wall_threshold if wall_threshold > 0 else very_high_value
+
     try:
         with open(filename, "r") as file:
 
             first_line = file.readline().strip("\n ").split()
+            if wall_threshold < 0:
+                first_line = [very_high_value if float(x) <= wall_threshold else x for x in first_line]
+
             data_matrix.append(list(map(float, first_line)))
 
             len_of_lines = len(first_line)
@@ -69,11 +75,15 @@ def process_env_heatmap_data(filename, wall_threshold):
                     sys.stderr.write(f"Line {line_number} contains a different number of elements ({len(line)}) compared to the first line ({len_of_lines}).\n")
                     exit()
 
+                if wall_threshold < 0:
+                    line = [very_high_value if float(x) <= wall_threshold else x for x in line]
+
                 line_data = list(map(float, line))
                 for v in line_data:
-                    if maximum_value < v < wall_threshold:
+                    if maximum_value < v < verification_threshold:
                         maximum_value = v
 
+                print(maximum_value)
                 data_matrix.append(line_data)
     except FileNotFoundError:
         sys.stderr.write(f"File {filename} not found.\n")
@@ -139,13 +149,13 @@ def process_heatmap_data(filename, ignore_marked_data, data_type, force_over_val
                     exit()
 
                 if not marked_data or not ignore_marked_data:
-                    min_corrent = min(data_value)
-                    max_corrent = max(data_value)
-                    if min_corrent != -1 and min_corrent < min_value:
-                        min_value = min_corrent
+                    min_current = min(data_value)
+                    max_current = max(data_value)
+                    if min_current != -1 and min_current < min_value:
+                        min_value = min_current
 
-                    if max_corrent != -1 and max_corrent > max_value:
-                        max_value = max_corrent
+                    if max_current != -1 and max_current > max_value:
+                        max_value = max_current
 
                 if marked_data and force_over_values:
                     data_value = [x * 2 for x in data_value] # by making the values higher, the generated contours will be correct.

@@ -29,7 +29,7 @@ This file can either be an actual data file, or a configuration file. Refer to t
 
 #### Data file
 
-This file is the direct output obtained from an experiment using any implementation of a Cellular Automaton for pedestrian evacuation (with exception to files for environment_heatmap graphics, which should have only data). Its content follows this structure:
+This file is the direct output obtained from an experiment using any implementation of a Cellular Automaton for pedestrian evacuation (with exception to files for environment_heatmap graphics). Its content follows this structure:
 
 * The first line contains the command used to generate the data.
 * The second line is a separator formed by hyphens (`-`).
@@ -60,23 +60,23 @@ You can specify the title and labels for the x and y axes using the `-t`, `-x`, 
 
 The graphic to be generated must be selected using the `-g` or `--graphic` option. The following graphics are available:
 
-1. environment_heatmap
+1. environment_heatmap: \
 Generates a heatmap of an environment. 
 Each value in the input file corresponds to a single cell in the environment. Futhermore, the data file must not have additional information at the beginning. 
-2. heatmap
+2. heatmap: \
 Generates a heatmap. 
 Each line of the input file corresponds to a single value in the heatmap. If necessary, a mean of the values in each line is calculated.
-3. int_contours
+3. int_contours: \
 Generates a contour graphic from integer data. 
-4. float_contours
+4. float_contours: \
 Generates a contour graphic from floating point data.
-5. line_graphic
+5. line_graphic: \
 Generates a line graphic with at least one line. 
-6. scatter_graphic
+6. scatter_graphic: \
 Generates a point graphic. Multiple data sets can be plotted into the same graphic.
-7. varas_door_width_7
+7. varas_door_width_7: \
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 7 from Varas (2007).
-8. varas_door_width_9
+8. varas_door_width_9: \
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 9 from Varas (2007).
 
 ### Dealing with specific data
@@ -91,8 +91,9 @@ In some instances of **contours** graphics, certain values may not be colored co
 
 #### Wall and obstacle value
 
-In the **environment_heatmap** graphic, values equal and above a certain threshold are considered as a wall or obstacle and colored outside the colorbar range. 
-The default value for this feature is 1000, but can be altered using the `--wall-threshold` option.
+In the **environment_heatmap** graphic, values equal and above (or below) a certain threshold are considered as a wall or obstacle and colored outside the colorbar range. 
+For positive threshold, values equal and above are the ones considered, while for a negative threshold values equal and below are the ones considered.
+The default value for this feature is 1000, but can be altered using the `--wall-threshold` option. 
 
 ## Program Architecture
 
