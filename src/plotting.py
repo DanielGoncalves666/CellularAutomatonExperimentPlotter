@@ -63,7 +63,7 @@ def set_tick_information(ax, axis_tick_info, axis: str):
 
     tick_locations, tick_values = axis_tick_info
 
-    if not axis_tick_info:
+    if not axis_tick_info or len(tick_locations) == 0:
         return
 
     tick_locations = list(map(float, tick_locations))

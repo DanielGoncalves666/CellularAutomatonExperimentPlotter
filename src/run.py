@@ -40,7 +40,7 @@ def generate_graphic():
         plotting.plot_3d_heatmap(x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, (0, maximum_value), output_file, labels, over_value_color="none")
     elif choice == "heatmap":
         (data_matrix, min_max_values) = processing.process_heatmap_data(input_file, ignore_marked_data, "int", force_over_values)
-        plotting.plot_heatmap(data_matrix, min_max_values, output_file, labels)
+        plotting.plot_heatmap(([],[]), ([],[]), data_matrix, min_max_values, output_file, labels)
     elif choice == "int_contours":
         (data_matrix, min_max_values) = processing.process_heatmap_data(input_file, ignore_marked_data, "int", force_over_values)
         plotting.plot_contours_graphic(data_matrix, min_max_values, output_file, labels, "int")
@@ -78,7 +78,8 @@ if __name__ == "__main__":
     
     ignore_marked_data = command_line.ignore_marked_data
     force_over_values = command_line.force_over_values
-    wall_threshold = float(command_line.wall_threshold[0])
+
+    wall_threshold = float(command_line.wall_threshold)
     
     generate_graphic()
 
