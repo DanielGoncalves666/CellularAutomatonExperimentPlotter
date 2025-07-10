@@ -17,7 +17,7 @@ def creating_arg_parser():
 
     # add_argument adds new arguments or options that can be inserted by command line.
     parser.add_argument('-i', required=True, nargs=1, help="Filename that contains the data from which the graphic will be generated.")
-    possible_graphics = ["environment_heatmap", "heatmap", "int_contours", "float_contours", "line_graphic",
+    possible_graphics = ["environment_heatmap", "3d_environment_heatmap", "heatmap", "int_contours", "float_contours", "line_graphic",
                          "scatter_graphic", "varas_door_width_7", "varas_door_width_9"]
     parser.add_argument('-g','--graphic', choices=possible_graphics, required=True, nargs=1, help="Specifies which graphic should be generated.")
     parser.add_argument('-o','--out', nargs="?", default="", help="Filename on which the graphic should be saved.")
@@ -33,8 +33,11 @@ def creating_arg_parser():
 
 def generate_graphic():
     if choice == "environment_heatmap":
-        data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold)
-        plotting.plot_heatmap(data_matrix, (0, maximum_value), output_file, labels, over_value_color="white", origin="upper")
+        x_axis_ticks, y_axis_ticks, _, data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold, "2d")
+        plotting.plot_heatmap(x_axis_ticks, y_axis_ticks, data_matrix, (0, maximum_value), output_file, labels, over_value_color="white", origin="upper")
+    elif choice == "3d_environment_heatmap":
+        x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold, "3d")
+        plotting.plot_3d_heatmap(x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, (0, maximum_value), output_file, labels, over_value_color="none")
     elif choice == "heatmap":
         (data_matrix, min_max_values) = processing.process_heatmap_data(input_file, ignore_marked_data, "int", force_over_values)
         plotting.plot_heatmap(data_matrix, min_max_values, output_file, labels)
@@ -52,8 +55,8 @@ def generate_graphic():
         plotting.plot_scatter_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels)
     elif choice == "varas_door_width_7":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
-        processed_lengends, difference_data_vector = processing.varas_door_width_fig_7(legends, data_vector)
-        plotting.plot_line_graphic(x_axis_ticks, y_axis_ticks, processed_lengends, difference_data_vector, output_file, labels, False)
+        processed_legends, difference_data_vector = processing.varas_door_width_fig_7(legends, data_vector)
+        plotting.plot_line_graphic(x_axis_ticks, y_axis_ticks, processed_legends, difference_data_vector, output_file, labels, False)
     elif choice == "varas_door_width_9":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
         quotient_data_vector = processing.varas_door_width_fig_9(legends, data_vector)

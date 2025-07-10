@@ -34,17 +34,20 @@ def extract_tick_information(line):
 
     return line.split(" ")
 
-def process_env_heatmap_data(filename: str, wall_threshold: float):
+def process_env_heatmap_data(filename: str, wall_threshold: float, dimension: str):
     """
-        Process data that will be plotted into a heatmap.
-        Each value in the file from which the data is read corresponds to a single cell in a cellular automaton.
+        Process data that will be plotted into an environment heatmap.
 
         Args:
-            filename (str): The name of the file containing the data.
+            filename (str): The name of the file containing the axis tick configurations and the data.
             wall_threshold (float): The threshold from which a value is considered to be an over value. For a negative threshold the values below it are considered.
+            dimension (str): Indicates the dimension to which the extracted data will be plotted. Used to ignore z-axis tick information for 2d graphics.
 
         Returns:
             A tuple containing:
+                - A 2-tuple with the locations and values of the x-axis ticks.
+                - A 2-tuple with the location and values of the y-axis ticks.
+                - A 2-tuple with the location and values of the z-axis ticks.
                 - A 2 dimension numpy array.
                 - A float, indicating the maximum value of the data (ignoring over values).
     """
@@ -55,17 +58,33 @@ def process_env_heatmap_data(filename: str, wall_threshold: float):
     very_high_value = 2 ** 30 # For a negative threshold, all values equal or below it are converted to the very_high_value in order to not require further alterations in the code.
     verification_threshold = wall_threshold if wall_threshold > 0 else very_high_value
 
+    z_ticks = ([], [])
     try:
         with open(filename, "r") as file:
+            lines = file.readlines()
 
-            first_line = file.readline().strip("\n ").split()
+            x_tick_locations = extract_tick_information(lines[0])
+            x_tick_values = extract_tick_information(lines[1])
+            y_tick_locations = extract_tick_information(lines[2])
+            y_tick_values = extract_tick_information(lines[3])
+
+            line_index = 4
+            if dimension == "3d":
+                z_tick_locations = extract_tick_information(lines[line_index])
+                z_tick_values = extract_tick_information(lines[line_index + 1])
+                z_ticks = (z_tick_locations, z_tick_values)
+
+            line_index += 2
+
+            first_data_line = lines[line_index].strip("\n ").split()
+            line_index += 1
             if wall_threshold < 0:
-                first_line = [very_high_value if float(x) <= wall_threshold else x for x in first_line]
+                first_data_line = [very_high_value if float(x) <= wall_threshold else x for x in first_data_line]
 
-            data_matrix.append(list(map(float, first_line)))
+            data_matrix.append(list(map(float, first_data_line)))
 
-            len_of_lines = len(first_line)
-            for line_number, line in enumerate(file, start=1):
+            len_of_lines = len(first_data_line)
+            for line_number, line in enumerate(lines[line_index:], start=1):
                 if line == "\n":
                     continue
 
@@ -83,7 +102,6 @@ def process_env_heatmap_data(filename: str, wall_threshold: float):
                     if maximum_value < v < verification_threshold:
                         maximum_value = v
 
-                print(maximum_value)
                 data_matrix.append(line_data)
     except FileNotFoundError:
         sys.stderr.write(f"File {filename} not found.\n")
@@ -92,7 +110,7 @@ def process_env_heatmap_data(filename: str, wall_threshold: float):
         sys.stderr.write(f"Non-numeric value found in the data.\n")
         exit()
 
-    return np.array(data_matrix), maximum_value
+    return (x_tick_locations, x_tick_values), (y_tick_locations, y_tick_values), z_ticks, np.array(data_matrix), maximum_value
 
 def process_heatmap_data(filename, ignore_marked_data, data_type, force_over_values):
     """

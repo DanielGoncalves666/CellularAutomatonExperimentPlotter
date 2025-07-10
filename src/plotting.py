@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
 import numpy as np
 
 import sys
@@ -25,6 +27,7 @@ def set_colormap(under_color="black", over_color="darkred"):
     
     return hmap
 
+
 def set_labels(labels):
     """
         Set the x-axis, y-axis and title labels of the graphic.
@@ -41,6 +44,46 @@ def set_labels(labels):
     plt.title(labels[0])
     plt.xlabel(labels[1])
     plt.ylabel(labels[2])
+
+
+def set_tick_information(ax, axis_tick_info, axis: str):
+    """
+        Configure the axis (AX) locations and values for the given AXIS (x, y or z).
+
+    Args:
+        ax: matplolib Axes object
+        axis_tick_info (tuple): A tuple containing two elements:
+                                  - The location of the axis ticks.
+                                  - The values of the axis ticks.
+        axis (str): A string indicating the axis to be configured. Can be either x, y or z.
+
+    Returns:
+        None
+    """
+
+    tick_locations, tick_values = axis_tick_info
+
+    if not axis_tick_info:
+        return
+
+    tick_locations = list(map(float, tick_locations))
+
+    if axis == "x":
+        if tick_values:
+            ax.set_xticks(tick_locations, tick_values)
+        else:
+            ax.set_xticks(tick_locations)
+    elif axis == "y":
+        if tick_values:
+            ax.set_yticks(tick_locations, tick_values)
+        else:
+            ax.set_yticks(tick_locations)
+    elif axis == "z":
+        if tick_values:
+            ax.set_zticks(tick_locations, tick_values)
+        else:
+            ax.set_zticks(tick_locations)
+
 
 def get_levels(min_max_values, data_type):
     """
@@ -67,6 +110,7 @@ def get_levels(min_max_values, data_type):
 
     return levels
 
+
 def get_scaling_law():
     """
         Determines the x and y values of the scaling law from VARAS (2007).
@@ -83,11 +127,18 @@ def get_scaling_law():
 
     return  exit_width, scaling_law
 
-def plot_heatmap(data_matrix, min_max_values, output_file, labels, over_value_color="darkred", origin="lower"):
+
+def plot_heatmap(x_axis_ticks, y_axis_ticks, data_matrix, min_max_values, output_file, labels, over_value_color="darkred", origin="lower"):
     """
         Generate a heatmap based on the parameters' data.
 
         Args:
+            x_axis_ticks (tuple): A tuple containing two elements:
+                                  - The location of the x-axis ticks.
+                                  - The values of the x-axis ticks.
+            y_axis_ticks (tuple): A tuple containing two elements:
+                                  - The location of the y-axis ticks.
+                                  - The values of the y-axis ticks.
             data_matrix (np.ndarray): A 2D numpy array representing the data.
             min_max_values (tuple): indicates the minimum and maximum values, respectively.
             output_file (str): The name of the file where the generated image will be saved.
@@ -105,11 +156,67 @@ def plot_heatmap(data_matrix, min_max_values, output_file, labels, over_value_co
 
     (min_value, max_value) = min_max_values
     plt.imshow(data_matrix, vmin=min_value, vmax=max_value, cmap=set_colormap(over_color=over_value_color), origin=origin)
+
+    set_tick_information(plt.gca(), x_axis_ticks, "x")
+    set_tick_information(plt.gca(), y_axis_ticks, "y")
+
     plt.colorbar()
 
     set_labels(labels)
 
     fig.savefig(f"out/{output_file}")
+
+
+def plot_3d_heatmap(x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, min_max_values, output_file, labels, over_value_color="darkred"):
+    """
+            Generate a 3D heatmap based on the parameters' data.
+
+            Args:
+                x_axis_ticks (tuple): A tuple containing two elements:
+                                  - The location of the x-axis ticks.
+                                  - The values of the x-axis ticks.
+                y_axis_ticks (tuple): A tuple containing two elements:
+                                  - The location of the y-axis ticks.
+                                  - The values of the y-axis ticks.
+                z_axis_ticks (tuple): A tuple containing two elements:
+                                  - The location of the z-axis ticks.
+                                  - The values of the z-axis ticks.
+                data_matrix (np.ndarray): A 2D numpy array representing the data.
+                min_max_values (tuple): indicates the minimum and maximum values, respectively.
+                output_file (str): The name of the file where the generated image will be saved.
+                labels (list): A list of labels to be included in the graphic. Should contain:
+                           - labels[0]: The title of the graph.
+                           - labels[1]: The label for the x-axis.
+                           - labels[2]: The label for the y-axis.
+                over_value_color (str): The color to be used for coloring over values. Defaults to darkred.
+            Returns:
+                None
+        """
+
+    fig =  plt.figure()
+    ax: Axes3D = fig.add_subplot(projection='3d')
+
+    set_tick_information(ax, y_axis_ticks, "x")
+    set_tick_information(ax, x_axis_ticks, "y") # The inversion was necessary to maintain compatibility with the 2D graphic
+    set_tick_information(ax, z_axis_ticks, "z")
+
+    nLines, nColumns = data_matrix.shape
+
+    xRange = np.arange(0, nColumns)
+    yRange = np.arange(0, nLines)
+
+    yCoordinates, xCoordinates = np.meshgrid(yRange, xRange, indexing="ij")
+
+    (min_value, max_value) = min_max_values
+    surf = ax.plot_surface(yCoordinates, xCoordinates, data_matrix, vmax=max_value, cmap=set_colormap(over_color=over_value_color), linewidth=0, antialiased=False)
+    ax.set_zlim(0, max_value)
+    ax.set_box_aspect([1,1,0.4])
+
+    fig.colorbar(surf, aspect=3, shrink=0.5)
+    set_labels(labels)
+
+    fig.savefig(f"out/{output_file}")
+
 
 def plot_contours_graphic(data_matrix, min_max_values, output_file, labels, data_type):
     """
@@ -142,6 +249,7 @@ def plot_contours_graphic(data_matrix, min_max_values, output_file, labels, data
     set_labels(labels)
 
     fig.savefig(f"out/{output_file}")
+
 
 def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels, scaling_law):
     """
@@ -178,21 +286,8 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
 
     fig, ax = plt.subplots()
 
-    if x_tick_locations:
-        x_tick_locations = list(map(float, x_tick_locations))
-
-        if x_tick_values:
-            ax.set_xticks(x_tick_locations,x_tick_values)
-        else:
-            ax.set_xticks(x_tick_locations)
-
-    if y_tick_locations:
-        y_tick_locations = list(map(float, y_tick_locations))
-
-        if y_tick_values:
-            ax.set_yticks(y_tick_locations, y_tick_values)
-        else:
-            ax.set_yticks(y_tick_locations)
+    set_tick_information(ax, x_axis_ticks, "x")
+    set_tick_information(ax, y_axis_ticks, "y")
 
     for data_line in data_vector:
         if not x_tick_locations and x_tick_values:
@@ -215,6 +310,7 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
         plt.legend(legends)
 
     fig.savefig(f"out/{output_file}")
+
 
 def plot_scatter_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels):
     """
@@ -253,20 +349,8 @@ def plot_scatter_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, outpu
         sys.stderr.write(f"x-axis tick locations are required.\n")
         exit()
 
-    if y_tick_locations:
-        y_tick_locations = list(map(float, y_tick_locations))
-
-        if y_tick_values:
-            ax.set_yticks(y_tick_locations, y_tick_values)
-        else:
-            ax.set_yticks(y_tick_locations)
-
-    x_tick_locations = list(map(float, x_tick_locations))
-
-    if not x_tick_values:
-        ax.set_xticks(x_tick_locations)
-    else:
-        ax.set_xticks(x_tick_locations, x_tick_values)
+    set_tick_information(ax, x_axis_ticks, "x")
+    set_tick_information(ax, y_axis_ticks, "y")
 
     plt.scatter(x_tick_locations, data_vector[0])
 

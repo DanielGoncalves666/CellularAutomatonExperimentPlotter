@@ -36,6 +36,22 @@ This file is the direct output obtained from an experiment using any implementat
 * The third line is empty.
 * The remaining lines contain the simulation results, typically the number of timesteps. Each line refers to a combination of doors.  
 
+#### Environment Heatmap Data File
+
+This kind of file is used to generate environment heatmaps. Optionally, the beginning of the file may include the locations and corresponding values of the axis ticks for each axis in the following structure:
+
+* The first line contains the locations of the x-axis ticks.
+* The second line contains the values of the x-axis ticks.
+* The third line contains the locations of the y-axis ticks.
+* The fourth line contains the values of the y-axis ticks.
+* The fifth line contains the locations of the z-axis ticks (for 3D heatmaps).
+* The sixth line contains the values of the z-axis ticks (for 3D heatmaps).
+
+If some tick information is not defined, the line must remain blank. 
+Following these may come any number of lines, where each value in each line corresponds to a single cell.
+
+For 2d environment heatmaps the z-axis tick information is ignored.
+
 #### Configuration File
 
 This file contains information about the graphic tick locations and values for each axis, as well as the name of at least one data file. Its content follows this structure:
@@ -62,7 +78,7 @@ The graphic to be generated must be selected using the `-g` or `--graphic` optio
 
 1. environment_heatmap: \
 Generates a heatmap of an environment. 
-Each value in the input file corresponds to a single cell in the environment. Futhermore, the data file must not have additional information at the beginning. 
+Each value in the input file (after the ticks configuration lines) corresponds to a single cell in the environment.
 2. heatmap: \
 Generates a heatmap. 
 Each line of the input file corresponds to a single value in the heatmap. If necessary, a mean of the values in each line is calculated.
