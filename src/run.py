@@ -27,7 +27,7 @@ def creating_arg_parser():
     parser.add_argument('--ignore-marked-data', action='store_true', help="Ignore marked data in lines beginning with #1 during the calculation of the min/max values.")
     parser.add_argument('--force-over-values', action='store_true', help="Force values exceeding the maximum determined value to be colored dark red. Without this, some graphics may display a mix of colors where only dark red should appear.")
     parser.add_argument('--only-save-fig', action='store_true', help="Doesn't show the generated graphic.")
-    parser.add_argument('--wall-threshold', nargs=1, default=1000.0, help="Threshold value above (or bellow, if negative) which a cell is considered a wall or obstacle. The threshold value itself is also treated as a wall.")
+    parser.add_argument('--wall-threshold', nargs=1, default=[1000.0], help="Threshold value above (or bellow, if negative) which a cell is considered a wall or obstacle. The threshold value itself is also treated as a wall.")
 
     return parser
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     ignore_marked_data = command_line.ignore_marked_data
     force_over_values = command_line.force_over_values
 
-    wall_threshold = float(command_line.wall_threshold)
+    wall_threshold = float(command_line.wall_threshold[0])
     
     generate_graphic()
 
