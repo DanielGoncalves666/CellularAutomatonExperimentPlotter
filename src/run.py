@@ -25,6 +25,7 @@ def creating_arg_parser():
     parser.add_argument('-x', '--xlabel', nargs=1, help="X-axis label")
     parser.add_argument('-y', '--ylabel', nargs=1, help="Y-axis label")
     parser.add_argument('--ignore-marked-data', action='store_true', help="Ignore marked data in lines beginning with #1 during the calculation of the min/max values.")
+    parser.add_argument('--suppress-heatmap-exits', action='store_true', help="Suppress the exit cells located on the edges of a environment heatmap.")
     parser.add_argument('--force-over-values', action='store_true', help="Force values exceeding the maximum determined value to be colored dark red. Without this, some graphics may display a mix of colors where only dark red should appear.")
     parser.add_argument('--only-save-fig', action='store_true', help="Doesn't show the generated graphic.")
     parser.add_argument('--wall-threshold', nargs=1, default=[1000.0], help="Threshold value above (or bellow, if negative) which a cell is considered a wall or obstacle. The threshold value itself is also treated as a wall.")
@@ -33,10 +34,10 @@ def creating_arg_parser():
 
 def generate_graphic():
     if choice == "environment_heatmap":
-        x_axis_ticks, y_axis_ticks, _, data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold, "2d")
+        x_axis_ticks, y_axis_ticks, _, data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold, "2d", suppress_heatmap_exits)
         plotting.plot_heatmap(x_axis_ticks, y_axis_ticks, data_matrix, (0, maximum_value), output_file, labels, over_value_color="white", origin="upper")
     elif choice == "3d_environment_heatmap":
-        x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold, "3d")
+        x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, maximum_value = processing.process_env_heatmap_data(input_file, wall_threshold, "3d", suppress_heatmap_exits)
         plotting.plot_3d_heatmap(x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, (0, maximum_value), output_file, labels, over_value_color="none")
     elif choice == "heatmap":
         (data_matrix, min_max_values) = processing.process_heatmap_data(input_file, ignore_marked_data, "int", force_over_values)
@@ -78,6 +79,7 @@ if __name__ == "__main__":
     
     ignore_marked_data = command_line.ignore_marked_data
     force_over_values = command_line.force_over_values
+    suppress_heatmap_exits = command_line.suppress_heatmap_exits
 
     wall_threshold = float(command_line.wall_threshold[0])
     

@@ -34,7 +34,36 @@ def extract_tick_information(line):
 
     return line.split(" ")
 
-def process_env_heatmap_data(filename: str, wall_threshold: float, dimension: str):
+def suppress_exits(matrix: list[list], wall_threshold: float):
+    """
+        Suppress exits located on the edges of a reticulate by assigning the wall_threshold value to them
+
+        Args:
+            matrix: a list of lists.
+            wall_threshold (float): The threshold from which a value is considered to be an over value. Must be positive.
+
+        Returns:
+            the original matrix with the necessary adjustments
+    """
+
+    print(matrix[15])
+
+    for i, line in enumerate(matrix):
+        for j, column in enumerate(line):
+
+            if i == 0 or j == len(matrix) - 1:
+                if line[j] < wall_threshold:
+                    matrix[i][j] = wall_threshold
+            elif j == 0 or j == len(line) - 1:
+                if line[j] < wall_threshold:
+                    matrix[i][j] = wall_threshold
+    print(matrix[15])
+
+    return matrix
+
+
+
+def process_env_heatmap_data(filename: str, wall_threshold: float, dimension: str, supress_heatmap_exits: bool):
     """
         Process data that will be plotted into an environment heatmap.
 
@@ -42,6 +71,7 @@ def process_env_heatmap_data(filename: str, wall_threshold: float, dimension: st
             filename (str): The name of the file containing the axis tick configurations and the data.
             wall_threshold (float): The threshold from which a value is considered to be an over value. For a negative threshold the values below it are considered.
             dimension (str): Indicates the dimension to which the extracted data will be plotted. Used to ignore z-axis tick information for 2d graphics.
+            supress_heatmap_exits (bool): if true, indicates that the exits located on the edges of the heatmap must be suppressed (assigned the wall_threshold value).
 
         Returns:
             A tuple containing:
@@ -109,6 +139,9 @@ def process_env_heatmap_data(filename: str, wall_threshold: float, dimension: st
     except ValueError:
         sys.stderr.write(f"Non-numeric value found in the data.\n")
         exit()
+
+    if supress_heatmap_exits:
+        suppress_exits(data_matrix, verification_threshold)
 
     return (x_tick_locations, x_tick_values), (y_tick_locations, y_tick_values), z_ticks, np.array(data_matrix), maximum_value
 

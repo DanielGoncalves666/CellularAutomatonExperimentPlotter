@@ -208,11 +208,13 @@ def plot_3d_heatmap(x_axis_ticks, y_axis_ticks, z_axis_ticks, data_matrix, min_m
     yCoordinates, xCoordinates = np.meshgrid(yRange, xRange, indexing="ij")
 
     (min_value, max_value) = min_max_values
-    surf = ax.plot_surface(yCoordinates, xCoordinates, data_matrix, vmax=max_value, cmap=set_colormap(over_color=over_value_color), linewidth=0, antialiased=False)
+    surf = ax.plot_surface(yCoordinates, xCoordinates, data_matrix, vmax=max_value, cmap=set_colormap(over_color=over_value_color),
+                           rcount=100, ccount=100, linewidth=0, antialiased=False)
     ax.set_zlim(0, max_value)
     ax.set_box_aspect([1,1,0.4])
+    ax.view_init(elev=40)
 
-    fig.colorbar(surf, aspect=3, shrink=0.5)
+    fig.colorbar(surf, ax=ax, aspect=12, shrink=0.7, pad=0.1)
     set_labels(labels)
 
     fig.savefig(f"out/{output_file}")

@@ -79,20 +79,23 @@ The graphic to be generated must be selected using the `-g` or `--graphic` optio
 1. environment_heatmap: \
 Generates a heatmap of an environment. 
 Each value in the input file (after the ticks configuration lines) corresponds to a single cell in the environment.
-2. heatmap: \
+2. 3d_environment_heatmap: \
+Generates a 3d heatmap of an environment.
+The input data is the same as the environment_heatmap. The final graphic will have one less cell in both axis, since the values are used to plot a surface instead of a grid. 
+3. heatmap: \
 Generates a heatmap. 
 Each line of the input file corresponds to a single value in the heatmap. If necessary, a mean of the values in each line is calculated.
-3. int_contours: \
+4. int_contours: \
 Generates a contour graphic from integer data. 
-4. float_contours: \
+5. float_contours: \
 Generates a contour graphic from floating point data.
-5. line_graphic: \
+6. line_graphic: \
 Generates a line graphic with at least one line. 
-6. scatter_graphic: \
+7. scatter_graphic: \
 Generates a point graphic. Multiple data sets can be plotted into the same graphic.
-7. varas_door_width_7: \
+8. varas_door_width_7: \
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 7 from Varas (2007).
-8. varas_door_width_9: \
+9. varas_door_width_9: \
 Generates a line graph. The provided data undergo the necessary operations to recreate Figure 9 from Varas (2007).
 
 ### Dealing with specific data
@@ -110,6 +113,11 @@ In some instances of **contours** graphics, certain values may not be colored co
 In the **environment_heatmap** graphic, values equal and above (or below) a certain threshold are considered as a wall or obstacle and colored outside the colorbar range. 
 For positive threshold, values equal and above are the ones considered, while for a negative threshold values equal and below are the ones considered.
 The default value for this feature is 1000, but can be altered using the `--wall-threshold` option. 
+
+#### Suppressing exits in 3D environment heatmap
+
+For 3d environment heatmaps the exits in the reticulate will appear outside the main part body of the graphic and single walls will not be plotted altogether. The latter occurs because the 3D heatmap is plotted using 
+a surface function. In order to avoid the former, the `-suppress-heatmap-exits` option can be used to remove the exits.
 
 ## Program Architecture
 

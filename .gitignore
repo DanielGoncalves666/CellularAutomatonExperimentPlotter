@@ -2,6 +2,7 @@ in/*
 !in/.gitkeep
 !in/varas*
 !in/alizadeh
+!in/kirchner_static_field
 
 out/*
 !out/.gitkeep
