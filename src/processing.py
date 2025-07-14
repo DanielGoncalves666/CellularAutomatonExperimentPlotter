@@ -46,18 +46,15 @@ def suppress_exits(matrix: list[list], wall_threshold: float):
             the original matrix with the necessary adjustments
     """
 
-    print(matrix[15])
-
     for i, line in enumerate(matrix):
         for j, column in enumerate(line):
 
-            if i == 0 or j == len(matrix) - 1:
+            if i == 0 or i == len(matrix) - 1:
                 if line[j] < wall_threshold:
                     matrix[i][j] = wall_threshold
             elif j == 0 or j == len(line) - 1:
                 if line[j] < wall_threshold:
                     matrix[i][j] = wall_threshold
-    print(matrix[15])
 
     return matrix
 

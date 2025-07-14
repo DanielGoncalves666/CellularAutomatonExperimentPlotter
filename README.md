@@ -116,7 +116,7 @@ The default value for this feature is 1000, but can be altered using the `--wall
 
 #### Suppressing exits in 3D environment heatmap
 
-For 3d environment heatmaps the exits in the reticulate will appear outside the main part body of the graphic and single walls will not be plotted altogether. The latter occurs because the 3D heatmap is plotted using 
+For 3d environment heatmaps the exits in the reticulate will appear outside the main body of the graphic and single walls will not be plotted altogether. The latter occurs because the 3D heatmap is plotted using 
 a surface function. In order to avoid the former, the `-suppress-heatmap-exits` option can be used to remove the exits.
 
 ## Program Architecture
