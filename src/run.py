@@ -29,6 +29,7 @@ def creating_arg_parser():
     parser.add_argument('--force-over-values', action='store_true', help="Force values exceeding the maximum determined value to be colored dark red. Without this, some graphics may display a mix of colors where only dark red should appear.")
     parser.add_argument('--only-save-fig', action='store_true', help="Doesn't show the generated graphic.")
     parser.add_argument('--wall-threshold', nargs=1, default=[1000.0], help="Threshold value above (or bellow, if negative) which a cell is considered a wall or obstacle. The threshold value itself is also treated as a wall.")
+    parser.add_argument('--no-marker', action='store_true', help="Data points are no marked in a line graphic.")
 
     return parser
 
@@ -50,7 +51,7 @@ def generate_graphic():
         plotting.plot_contours_graphic(data_matrix, min_max_values, output_file, labels, "float")
     elif choice == "line_graphic":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
-        plotting.plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels, False)
+        plotting.plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels, False, no_marker)
     elif choice == "scatter_graphic":
         x_axis_ticks, y_axis_ticks, legends, data_vector = processing.process_configuration_file(input_file)
         plotting.plot_scatter_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels)
@@ -80,6 +81,7 @@ if __name__ == "__main__":
     ignore_marked_data = command_line.ignore_marked_data
     force_over_values = command_line.force_over_values
     suppress_heatmap_exits = command_line.suppress_heatmap_exits
+    no_marker = command_line.no_marker
 
     wall_threshold = float(command_line.wall_threshold[0])
     

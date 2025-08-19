@@ -299,13 +299,19 @@ def process_experimental_data_file(filename):
     try:
         with open(filename) as file:
             for _ in range(3):
-                file.readline()  # ignore the lines that don't contain simulation data on the beggining of the file.
+                file.readline()  # ignore the lines that don't contain simulation data on the beginning of the file.
 
             while True:
                 line = file.readline()
 
+                if line == "\n":
+                    continue
+
                 if line == "":
                     break  # EOF reached
+
+                if line[0] == '*':
+                    line =  " ".join(line.split(" ")[1:]) # Ignore the first entry (example: *1.0)
 
                 current_line_data = list(map(int,line.strip("\n ").split(" ")))
 

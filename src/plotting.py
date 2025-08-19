@@ -253,7 +253,7 @@ def plot_contours_graphic(data_matrix, min_max_values, output_file, labels, data
     fig.savefig(f"out/{output_file}")
 
 
-def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels, scaling_law):
+def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_file, labels, scaling_law, no_marker):
     """
         Generates a line graph with at least one line. Each line is plotted using each list of data_vector.
 
@@ -273,6 +273,7 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
                            - labels[1]: The label for the x-axis.
                            - labels[2]: The label for the y-axis.
             scaling_law (bool): Indicates if the scaling law of (VARAS, 2007) should be plotted.
+            no_marker (bool): Indicates if the data points should be marked or not.
         Returns:
             None
 
@@ -282,6 +283,8 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
             If x-axis values are provided without locations, these values are used directly as the x argument in the plot function.
             If y-axis values are provided without locations, they are ignored.
     """
+
+    marker = None if no_marker else 'o'
 
     x_tick_locations, x_tick_values = x_axis_ticks
     y_tick_locations, y_tick_values = y_axis_ticks
@@ -297,9 +300,9 @@ def plot_line_graphic(x_axis_ticks, y_axis_ticks, legends, data_vector, output_f
                 sys.stderr.write(f"The number of elements in the x-axis ({len(x_tick_values)}) is different from the number os elements in the y-axis ({len(data_line)}).\n")
                 exit()
 
-            plt.plot(x_tick_values, data_line, 'o-')
+            plt.plot(x_tick_values, data_line, '-', marker=marker)
         else:
-            plt.plot(data_line, "o-")
+            plt.plot(data_line, "-", marker=marker)
 
     if scaling_law:
         legends.append("T/N=2/a")
